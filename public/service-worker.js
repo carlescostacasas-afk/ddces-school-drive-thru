@@ -1,10 +1,10 @@
 // DDCES DriveThru application shell cache.
 // Live calls and synchronization always need an internet connection.
-const CACHE_NAME = "ddces-drive-shell-v5";
+const CACHE_NAME = "ddces-drive-shell-v6";
 const APP_SHELL = [
   "/",
   "/style.css?v=8",
-  "/app.js?v=8",
+  "/app.js?v=9",
   "/logo-data.js?v=1",
   "/manifest.webmanifest?v=4",
   "/app-icon.svg?v=4",
