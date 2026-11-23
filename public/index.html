@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>DDCES · School Drive-Thru</title>
-<link rel="stylesheet" href="style.css?v=3">
+<link rel="stylesheet" href="style.css?v=4">
 </head>
 <body>
 <header><div class="brand">DDCES</div><div><h1>School Drive-Thru</h1><p>Sistema de recogida de alumnos</p></div><span id="connection" class="connection">Conectando…</span></header>
@@ -16,7 +16,6 @@
 </div>
 <p class="hint">Cada pantalla requiere su contraseña de acceso.</p>
 </section>
-
 <section id="login" class="panel hidden">
   <div class="topline"><button id="loginBack" class="back">← Inicio</button><span id="loginBadge" class="pill">ACCESO</span></div>
   <h2 id="loginTitle">Contraseña de acceso</h2>
@@ -28,7 +27,6 @@
   </form>
   <p id="loginError" class="login-error" role="alert"></p>
 </section>
-
 <section id="drive" class="panel hidden">
 <div class="topline"><button class="app-back back">← Cerrar sesión</button><span class="pill">PANTALLA DRIVE-THRU</span></div>
 <h2>Introduce el código del alumno</h2>
@@ -40,7 +38,6 @@
 <button data-key="clear" class="utility">BORRAR</button><button data-key="0">0</button><button data-key="back" class="utility">⌫</button>
 </div><p id="notice" class="notice" aria-live="polite"></p>
 </section>
-
 <section id="classroom" class="panel hidden">
 <div class="topline"><button class="app-back back">← Cerrar sesión</button><span class="pill">PANTALLA PROFESOR / AULA</span><button id="fullscreen" class="utility">⛶ Pantalla completa</button></div>
 <div class="class-head">
@@ -60,5 +57,5 @@
 </section>
 </main>
 <footer>DDCES · Sistema de recogida escolar</footer>
-<script src="/socket.io/socket.io.js"></script><script src="app.js?v=3"></script>
+<script src="/socket.io/socket.io.js"></script><script src="app.js?v=4"></script>
 </body></html>
