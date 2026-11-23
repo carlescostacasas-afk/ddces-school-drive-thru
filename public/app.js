@@ -245,15 +245,16 @@ function renderCallLog() {
     const identity = document.createElement("div");
     identity.className = "call-identity";
 
-    const studentCode = document.createElement("strong");
-    studentCode.className = "call-code";
-    studentCode.textContent = call.code;
-
-    const studentName = document.createElement("span");
+    const studentName = document.createElement("strong");
     studentName.className = "call-name";
     studentName.textContent = studentNameForCode(call.code);
 
-    identity.append(studentCode, studentName);
+    const studentCode = document.createElement("span");
+    studentCode.className = "call-code";
+    studentCode.textContent = call.code;
+
+    // Show the student's name first and the DDCES code as secondary information.
+    identity.append(studentName, studentCode);
 
     if (allCoursesSelected) {
       const studentNumber = Number(call.code.replace("DDCES", ""));
