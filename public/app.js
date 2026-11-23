@@ -9,6 +9,61 @@ const courseSelect = document.getElementById("courseSelect");
 const passwordInput = document.getElementById("accessPassword");
 const loginError = document.getElementById("loginError");
 
+// Nombres ficticios de demostración, asignados en orden a DDCES1–DDCES160.
+// Sustituir esta lista por el roster autorizado del colegio antes del uso oficial.
+const STUDENT_NAMES = [
+  "Sofia Alvarez", "Mateo Rivera", "Isabella Torres", "Lucas Bennett", "Valentina Cruz",
+  "Noah Williams", "Camila Morales", "Ethan Brooks", "Mia Castillo", "Liam Johnson",
+  "Gabriel Reyes", "Olivia Thompson", "Daniel Ortiz", "Ava Martinez", "Adrian Garcia",
+  "Emma Wilson", "Sebastian Flores", "Chloe Davis", "Julian Herrera", "Grace Miller",
+
+  "Diego Ramirez", "Amelia Anderson", "Nicolas Vega", "Harper Moore", "Lucia Sanchez",
+  "James Carter", "Elena Mendoza", "Benjamin Scott", "Thiago Silva", "Charlotte Lewis",
+  "Andres Navarro", "Ella Walker", "Samuel Perez", "Victoria Hall", "Emilio Castro",
+  "Aria Young", "Rafael Jimenez", "Lily Allen", "Marco Delgado", "Zoe King",
+
+  "Isabel Romero", "Mason Wright", "Paula Medina", "Henry Green", "Dylan Cooper",
+  "Natalia Rojas", "Alexander Hill", "Abigail Baker", "Javier Molina", "Layla Nelson",
+  "Carlos Herrera", "Avery Mitchell", "Eva Dominguez", "Logan Roberts", "Manuel Ortiz",
+  "Scarlett Turner", "Santiago Fuentes", "Penelope Phillips", "Andres Cruz", "Riley Campbell",
+
+  "Mariana Vargas", "Elijah Parker", "Ana Beltran", "Michael Evans", "Ximena Aguilar",
+  "Jackson Edwards", "Sara Cabrera", "Aiden Collins", "Renata Salazar", "Carter Stewart",
+  "Francisco Luna", "Nora Morris", "Leonardo Pineda", "Stella Rogers", "Pablo Acosta",
+  "Addison Reed", "Dario Guerra", "Hannah Cook", "Cristian Soto", "Audrey Morgan",
+
+  "Alma Valencia", "Wyatt Bell", "Bianca Fuentes", "Caleb Murphy", "Danna Lozano",
+  "Owen Bailey", "Abril Campos", "Luke Rivera", "Emiliano Pena", "Ellie Richardson",
+  "Sergio Fuentes", "Mila Cox", "Gael Mendoza", "Lucy Howard", "Enzo Carrillo",
+  "Paisley Ward", "Bruno Vega", "Violet Torres", "Maxwell Diaz", "Ariana Foster",
+
+  "Maya Espinoza", "Jayden Gray", "Catalina Pardo", "Isaac James", "Julieta Marin",
+  "Levi Watson", "Diana Solis", "Ezra Brooks", "Alonso Cardenas", "Samantha Price",
+  "Kevin Rivas", "Madeline Bennett", "Alvaro Ibarra", "Brooklyn Hughes", "Esteban Vidal",
+  "Claire Patterson", "Miranda Cabrera", "Austin Long", "Tomas Benitez", "Sadie Ross",
+
+  "Ines Serrano", "Hunter Powell", "Mireya Lozano", "Nolan Perry", "Alexa Fuentes",
+  "Easton Butler", "Belen Montoya", "Roman Henderson", "Celeste Pacheco", "Dominic Jenkins",
+  "Anais Laurent", "Miles Barnes", "Karla Meza", "Xavier Fisher", "Noemi Arias",
+  "Connor Simmons", "Felipe Duarte", "Ruby Coleman", "Derek Suarez", "Elisa Guerra",
+
+  "Amir Hassan", "Naomi Pierre", "Talia Bernard", "Andre Joseph", "Kiara Charles",
+  "Malik Washington", "Jasmine Clarke", "Ibrahim Diallo", "Malia Toussaint", "Kendall Wright",
+  "Jorge Espada", "Leila Haddad", "Zion Thomas", "Yasmin Ali", "Calvin Reed",
+  "Amara Jean", "Dante Lewis", "Selena Martinez", "Rayan Morin", "Nadia Baptiste"
+];
+
+if (STUDENT_NAMES.length !== 160) {
+  console.error("La lista de alumnos debe contener exactamente 160 nombres.");
+}
+
+function studentNameForCode(code) {
+  const number = Number(String(code).replace("DDCES", ""));
+  return Number.isInteger(number) && number >= 1 && number <= 160
+    ? STUDENT_NAMES[number - 1]
+    : "Nombre no asignado";
+}
+
 let calls = [];
 let selectedRole = null;
 let currentRole = null;
@@ -116,8 +171,8 @@ socket.on("state", list => {
 
 function sendCode() {
   if (currentRole !== "drive") return;
-  let value = codeInput.value.toUpperCase().replace(/\s/g, "");
-  if (/^\d+$/.test(value)) value = "DDCES" + value;
+  let value = codeInput.value.toUpperCase().replace(/\\s/g, "");
+  if (/^\\d+$/.test(value)) value = "DDCES" + value;
   socket.emit("call-student", value);
   codeInput.value = "";
 }
@@ -177,20 +232,34 @@ function renderCallLog() {
   courseCalls.forEach((call, index) => {
     const row = document.createElement("div");
     row.className = "call-row";
+
     const order = document.createElement("span");
     order.className = "call-order";
     order.textContent = String(index + 1).padStart(2, "0");
-    const student = document.createElement("strong");
-    student.className = "call-code";
-    student.textContent = call.code;
+
+    const identity = document.createElement("div");
+    identity.className = "call-identity";
+
+    const studentCode = document.createElement("strong");
+    studentCode.className = "call-code";
+    studentCode.textContent = call.code;
+
+    const studentName = document.createElement("span");
+    studentName.className = "call-name";
+    studentName.textContent = studentNameForCode(call.code);
+
+    identity.append(studentCode, studentName);
+
     const status = document.createElement("span");
     status.className = "call-status";
     status.textContent = "LLAMADO";
+
     const time = document.createElement("time");
     time.className = "call-time";
     time.dateTime = new Date(call.calledAt).toISOString();
     time.textContent = formatCallTime(call.calledAt);
-    row.append(order, student, status, time);
+
+    row.append(order, identity, status, time);
     log.appendChild(row);
   });
 }
