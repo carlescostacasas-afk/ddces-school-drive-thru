@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>DDCES · School Drive-Thru</title>
-<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="style.css?v=2">
 </head>
 <body>
 <header><div class="brand">DDCES</div><div><h1>School Drive-Thru</h1><p>Sistema de recogida de alumnos</p></div><span id="connection" class="connection">Conectando…</span></header>
@@ -11,7 +11,7 @@
 <section id="home" class="panel home">
 <h2>Selecciona una pantalla</h2>
 <div class="choice"><button class="big primary" data-view="drive">🚗 DRIVE-THRU<small>Introducir código del alumno</small></button>
-<button class="big secondary" data-view="classroom">🏫 PROFESOR / AULA<small>Proyección de alumnos llamados</small></button></div>
+<button class="big secondary" data-view="classroom">🏫 PROFESOR / AULA<small>Registro de llamadas de tu curso</small></button></div>
 <p class="hint">Abre Drive-thru en un dispositivo y Profesor/Aula en el proyector. Se sincronizan automáticamente.</p>
 </section>
 <section id="drive" class="panel hidden">
@@ -27,11 +27,26 @@
 </section>
 <section id="classroom" class="panel hidden">
 <div class="topline"><button class="back">← Inicio</button><span class="pill">PANTALLA PROFESOR / AULA</span><button id="fullscreen" class="utility">⛶ Pantalla completa</button></div>
-<div class="class-head"><div><h2>Alumnos llamados a Drive-Thru</h2><p>Los códigos aparecen aquí en cuanto se introducen.</p></div><button id="clearAll" class="danger">Limpiar todos</button></div>
-<div id="latest" class="latest empty">ESPERANDO LLAMADAS</div>
-<div id="classes" class="classes"></div>
+<div class="class-head">
+  <div><h2>Registro de llamadas</h2><p>Las llamadas permanecen visibles durante todo el día, en el orden en que se han realizado.</p></div>
+  <label class="course-picker" for="courseSelect">Curso que deseas visualizar
+    <select id="courseSelect" aria-label="Seleccionar grado">
+      <option value="1">1.º grado</option>
+      <option value="2">2.º grado</option>
+      <option value="3">3.º grado</option>
+      <option value="4">4.º grado</option>
+      <option value="5">5.º grado</option>
+      <option value="6">6.º grado</option>
+      <option value="7">7.º grado</option>
+      <option value="8">8.º grado</option>
+    </select>
+  </label>
+</div>
+<div id="courseSummary" class="course-summary">0 llamadas registradas hoy</div>
+<div id="callLog" class="call-log" aria-live="polite"></div>
+<p class="teacher-note">Esta pantalla es solo de consulta: las llamadas no se pueden borrar ni quitar desde el aula.</p>
 </section>
 </main>
 <footer>DDCES · Sistema de recogida escolar</footer>
-<script src="/socket.io/socket.io.js"></script><script src="app.js"></script>
+<script src="/socket.io/socket.io.js"></script><script src="app.js?v=2"></script>
 </body></html>
