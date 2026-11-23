@@ -4,7 +4,8 @@ const drive = document.getElementById("drive");
 const classroom = document.getElementById("classroom");
 const codeInput = document.getElementById("code");
 const notice = document.getElementById("notice");
-let active = [];
+const courseSelect = document.getElementById("courseSelect");
+let calls = [];
 
 function show(view) {
   [home, drive, classroom].forEach(x => x.classList.add("hidden"));
@@ -15,7 +16,7 @@ document.querySelectorAll(".back").forEach(b => b.addEventListener("click", () =
 socket.on("connect", () => document.getElementById("connection").textContent = "● Conectado");
 socket.on("disconnect", () => document.getElementById("connection").textContent = "● Sin conexión");
 socket.on("notice", n => { notice.textContent=n.text; notice.className="notice "+(n.type==="success"?"ok":"err"); });
-socket.on("state", list => { active=list; render(); });
+socket.on("state", list => { calls=list; renderCallLog(); });
 
 function sendCode() {
   let value=codeInput.value.toUpperCase().replace(/\s/g,"");
@@ -32,30 +33,73 @@ document.getElementById("keypad").addEventListener("click", e => {
   else codeInput.value += key;
   codeInput.focus();
 });
-document.getElementById("clearAll").addEventListener("click", () => {
-  if(confirm("¿Limpiar todas las llamadas activas?")) socket.emit("clear-all");
-});
+
+courseSelect.addEventListener("change", renderCallLog);
 document.getElementById("fullscreen").addEventListener("click", () => {
   if(!document.fullscreenElement) document.documentElement.requestFullscreen?.();
   else document.exitFullscreen?.();
 });
-function render(){
-  const nums=active.map(x=>Number(x.code.replace("DDCES",""))).sort((a,b)=>a-b);
-  const latest=document.getElementById("latest");
-  latest.className="latest"+(nums.length?"":" empty");
-  latest.textContent=nums.length ? "LLAMADA ACTIVA: "+active[active.length-1].code : "ESPERANDO LLAMADAS";
-  const wrap=document.getElementById("classes"); wrap.innerHTML="";
-  for(let c=0;c<8;c++){
-    const card=document.createElement("div"); card.className="class-card";
-    const title=document.createElement("h3"); title.textContent=`CLASE ${c+1} · DDCES${c*20+1}–${c*20+20}`; card.appendChild(title);
-    const grid=document.createElement("div"); grid.className="students";
-    for(let i=c*20+1;i<=c*20+20;i++){
-      const code="DDCES"+i, isCalled=active.some(x=>x.code===code);
-      const cell=document.createElement("div"); cell.className="student"+(isCalled?" called":"");
-      cell.textContent=code.replace("DDCES","");
-      if(isCalled){cell.title="Pulsar para marcar como recogido";cell.addEventListener("click",()=>socket.emit("picked-up",code));}
-      grid.appendChild(cell);
-    }
-    card.appendChild(grid);wrap.appendChild(card);
-  }
+
+function formatCallTime(timestamp) {
+  return new Intl.DateTimeFormat("es", {
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    hour12: true
+  }).format(new Date(timestamp));
 }
+
+function renderCallLog() {
+  if (!courseSelect) return;
+  const selectedGrade = Number(courseSelect.value);
+  const firstStudent = (selectedGrade - 1) * 20 + 1;
+  const lastStudent = selectedGrade * 20;
+
+  const courseCalls = calls
+    .filter(call => {
+      const studentNumber = Number(call.code.replace("DDCES", ""));
+      return studentNumber >= firstStudent && studentNumber <= lastStudent;
+    })
+    .sort((a, b) => a.calledAt - b.calledAt);
+
+  document.getElementById("courseSummary").textContent =
+    courseCalls.length + (courseCalls.length === 1 ? " llamada registrada hoy" : " llamadas registradas hoy");
+
+  const log = document.getElementById("callLog");
+  log.replaceChildren();
+
+  if (courseCalls.length === 0) {
+    const empty = document.createElement("div");
+    empty.className = "empty-log";
+    empty.textContent = "Todavía no hay llamadas para este curso hoy.";
+    log.appendChild(empty);
+    return;
+  }
+
+  courseCalls.forEach((call, index) => {
+    const row = document.createElement("div");
+    row.className = "call-row";
+
+    const order = document.createElement("span");
+    order.className = "call-order";
+    order.textContent = String(index + 1).padStart(2, "0");
+
+    const student = document.createElement("strong");
+    student.className = "call-code";
+    student.textContent = call.code;
+
+    const status = document.createElement("span");
+    status.className = "call-status";
+    status.textContent = "LLAMADO";
+
+    const time = document.createElement("time");
+    time.className = "call-time";
+    time.dateTime = new Date(call.calledAt).toISOString();
+    time.textContent = formatCallTime(call.calledAt);
+
+    row.append(order, student, status, time);
+    log.appendChild(row);
+  });
+}
+
+renderCallLog();
