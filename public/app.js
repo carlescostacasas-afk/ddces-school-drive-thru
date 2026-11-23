@@ -8,6 +8,8 @@ const classroom = document.getElementById("classroom");
 const codeInput = document.getElementById("code");
 const notice = document.getElementById("notice");
 const courseSelect = document.getElementById("courseSelect");
+const studentSearchInput = document.getElementById("studentSearchInput");
+const studentSearchResults = document.getElementById("studentSearchResults");
 const passwordInput = document.getElementById("accessPassword");
 const loginError = document.getElementById("loginError");
 
@@ -101,8 +103,10 @@ function logout() {
   sessionPassword = "";
   calls = [];
   codeInput.value = "";
+  if (studentSearchInput) studentSearchInput.value = "";
   notice.textContent = "";
   renderCallLog();
+  renderStudentSearchResults();
   show("home");
 }
 
@@ -139,7 +143,10 @@ document.getElementById("loginForm").addEventListener("submit", event => {
     passwordInput.value = "";
     loginError.textContent = "";
     show(currentRole);
-    if (currentRole === "classroom") renderCallLog();
+    if (currentRole === "classroom") {
+      renderCallLog();
+      renderStudentSearchResults();
+    }
   });
 });
 
@@ -169,6 +176,7 @@ socket.on("state", list => {
   if (!currentRole) return;
   calls = list;
   renderCallLog();
+  renderStudentSearchResults();
 });
 
 function sendCode() {
@@ -191,7 +199,16 @@ document.getElementById("keypad").addEventListener("click", event => {
   codeInput.focus();
 });
 
-courseSelect.addEventListener("change", renderCallLog);
+courseSelect.addEventListener("change", () => {
+  renderCallLog();
+  renderStudentSearchResults();
+});
+studentSearchInput.addEventListener("input", renderStudentSearchResults);
+document.getElementById("clearStudentSearch").addEventListener("click", () => {
+  studentSearchInput.value = "";
+  renderStudentSearchResults();
+  studentSearchInput.focus();
+});
 document.getElementById("fullscreen").addEventListener("click", () => {
   if (!document.fullscreenElement) document.documentElement.requestFullscreen?.();
   else document.exitFullscreen?.();
@@ -204,6 +221,103 @@ function formatCallTime(timestamp) {
     second: "2-digit",
     hour12: true
   }).format(new Date(timestamp));
+}
+
+function normalizeSearchText(value) {
+  return String(value || "")
+    .normalize("NFD")
+    .replace(/[\\u0300-\\u036f]/g, "")
+    .toLocaleLowerCase("es")
+    .trim();
+}
+
+function renderStudentSearchResults() {
+  if (!studentSearchInput || !studentSearchResults || currentRole !== "classroom") return;
+
+  const query = normalizeSearchText(studentSearchInput.value);
+  studentSearchResults.replaceChildren();
+  studentSearchResults.classList.toggle("hidden", !query);
+  if (!query) return;
+
+  const allCoursesSelected = courseSelect.value === "all";
+  const selectedGrade = Number(courseSelect.value);
+  const searchTerms = query.split(/\\s+/).filter(Boolean);
+
+  const students = STUDENT_NAMES.map((name, index) => {
+    const number = index + 1;
+    return {
+      code: "DDCES" + number,
+      name,
+      grade: Math.floor((number - 1) / 20) + 1,
+      number
+    };
+  }).filter(student => {
+    if (allCoursesSelected) return true;
+    return student.grade === selectedGrade;
+  }).filter(student => {
+    const searchable = normalizeSearchText(student.name + " " + student.code + " DDCES " + student.number);
+    return searchTerms.every(term => searchable.includes(term));
+  });
+
+  const heading = document.createElement("div");
+  heading.className = "student-search-count";
+  heading.textContent = students.length === 1
+    ? "1 alumno encontrado"
+    : students.length + " alumnos encontrados";
+  studentSearchResults.appendChild(heading);
+
+  if (students.length === 0) {
+    const empty = document.createElement("div");
+    empty.className = "student-search-empty";
+    empty.textContent = allCoursesSelected
+      ? "No se ha encontrado ningún alumno. Comprueba el nombre, apellido o código."
+      : "No se ha encontrado ningún alumno en este curso. Selecciona ALL para buscar en todos los grados.";
+    studentSearchResults.appendChild(empty);
+    return;
+  }
+
+  const callsByCode = new Map(calls.map(call => [call.code, call]));
+  const list = document.createElement("div");
+  list.className = "student-search-list";
+
+  students.forEach(student => {
+    const call = callsByCode.get(student.code);
+    const card = document.createElement("article");
+    card.className = "student-search-result";
+
+    const identity = document.createElement("div");
+    identity.className = "student-search-identity";
+
+    const name = document.createElement("strong");
+    name.className = "student-search-name";
+    name.textContent = student.name;
+
+    const detail = document.createElement("span");
+    detail.className = "student-search-detail";
+    detail.textContent = student.code + " · " + student.grade + ".º grado";
+
+    identity.append(name, detail);
+
+    const state = document.createElement("div");
+    state.className = "student-search-state";
+
+    const badge = document.createElement("span");
+    badge.className = call ? "student-search-status is-called" : "student-search-status is-pending";
+    badge.textContent = call ? "LLAMADO" : "AÚN NO LLAMADO";
+    state.appendChild(badge);
+
+    const time = document.createElement("span");
+    time.className = "student-search-time";
+    time.textContent = call
+      ? "Hora: " + formatCallTime(call.calledAt)
+      : "Sin llamada registrada hoy";
+    state.appendChild(time);
+
+    card.append(identity, state);
+    list.appendChild(card);
+  });
+
+  studentSearchResults.appendChild(list);
 }
 
 function renderCallLog() {
