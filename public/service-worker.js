@@ -1,14 +1,14 @@
 // DDCES DriveThru application shell cache.
-// Live calls still require an online connection to the school server.
-const CACHE_NAME = "ddces-drive-shell-v1";
+// The app needs an internet connection for live calls and synchronization.
+const CACHE_NAME = "ddces-drive-shell-v2";
 const APP_SHELL = [
   "/",
   "/style.css?v=7",
   "/app.js?v=7",
   "/logo-data.js?v=1",
-  "/manifest.webmanifest",
-  "/app-icon-192.png",
-  "/app-icon.svg"
+  "/manifest.webmanifest?v=2",
+  "/app-icon-192.png?v=2",
+  "/app-icon.svg?v=2"
 ];
 
 self.addEventListener("install", event => {
