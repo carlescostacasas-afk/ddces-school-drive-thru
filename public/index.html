@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>DDCES · School Drive-Thru</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header><div class="brand">DDCES</div><div><h1>School Drive-Thru</h1><p>Sistema de recogida de alumnos</p></div><span id="connection" class="connection">Conectando…</span></header>
+<main>
+<section id="home" class="panel home">
+<h2>Selecciona una pantalla</h2>
+<div class="choice"><button class="big primary" data-view="drive">🚗 DRIVE-THRU<small>Introducir código del alumno</small></button>
+<button class="big secondary" data-view="classroom">🏫 PROFESOR / AULA<small>Proyección de alumnos llamados</small></button></div>
+<p class="hint">Abre Drive-thru en un dispositivo y Profesor/Aula en el proyector. Se sincronizan automáticamente.</p>
+</section>
+<section id="drive" class="panel hidden">
+<div class="topline"><button class="back">← Inicio</button><span class="pill">PANTALLA DRIVE-THRU</span></div>
+<h2>Introduce el código del alumno</h2>
+<div class="entry"><input id="code" autocomplete="off" placeholder="DDCES23" aria-label="Código del alumno"><button id="send" class="primary">LLAMAR</button></div>
+<div class="keypad" id="keypad">
+<button data-key="1">1</button><button data-key="2">2</button><button data-key="3">3</button>
+<button data-key="4">4</button><button data-key="5">5</button><button data-key="6">6</button>
+<button data-key="7">7</button><button data-key="8">8</button><button data-key="9">9</button>
+<button data-key="clear" class="utility">BORRAR</button><button data-key="0">0</button><button data-key="back" class="utility">⌫</button>
+</div><p id="notice" class="notice" aria-live="polite"></p>
+</section>
+<section id="classroom" class="panel hidden">
+<div class="topline"><button class="back">← Inicio</button><span class="pill">PANTALLA PROFESOR / AULA</span><button id="fullscreen" class="utility">⛶ Pantalla completa</button></div>
+<div class="class-head"><div><h2>Alumnos llamados a Drive-Thru</h2><p>Los códigos aparecen aquí en cuanto se introducen.</p></div><button id="clearAll" class="danger">Limpiar todos</button></div>
+<div id="latest" class="latest empty">ESPERANDO LLAMADAS</div>
+<div id="classes" class="classes"></div>
+</section>
+</main>
+<footer>DDCES · Sistema de recogida escolar</footer>
+<script src="/socket.io/socket.io.js"></script><script src="app.js"></script>
+</body></html>
