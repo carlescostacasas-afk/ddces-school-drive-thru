@@ -61,6 +61,26 @@ if (STUDENT_NAMES.length !== 160) {
   console.error("La lista de alumnos debe contener exactamente 160 nombres.");
 }
 
+const COURSE_BY_GROUP = {
+  1: { key: "1", label: "1.º grado" },
+  2: { key: "2", label: "2.º grado" },
+  3: { key: "3", label: "3.º grado" },
+  4: { key: "4", label: "4.º grado" },
+  5: { key: "5", label: "5.º grado" },
+  6: { key: "pk3", label: "PK3" },
+  7: { key: "pk4", label: "PK4" },
+  8: { key: "pk5", label: "PK5" }
+};
+
+const GROUP_BY_COURSE = Object.fromEntries(
+  Object.entries(COURSE_BY_GROUP).map(([group, course]) => [course.key, Number(group)])
+);
+
+function courseForStudentNumber(number) {
+  const group = Math.ceil(number / 20);
+  return COURSE_BY_GROUP[group] || { key: "", label: "Curso no asignado" };
+}
+
 function studentNameForCode(code) {
   const number = Number(String(code).replace("DDCES", ""));
   return Number.isInteger(number) && number >= 1 && number <= 160
@@ -248,12 +268,12 @@ function renderStudentSearchResults() {
     return {
       code: "DDCES" + number,
       name,
-      grade: Math.floor((number - 1) / 20) + 1,
+      course: courseForStudentNumber(number),
       number
     };
   }).filter(student => {
     if (allCoursesSelected) return true;
-    return student.grade === selectedGrade;
+    return student.course.key === courseSelect.value;
   }).filter(student => {
     const searchable = normalizeSearchText(student.name + " " + student.code + " DDCES " + student.number);
     return searchTerms.every(term => searchable.includes(term));
@@ -294,7 +314,7 @@ function renderStudentSearchResults() {
 
     const detail = document.createElement("span");
     detail.className = "student-search-detail";
-    detail.textContent = student.code + " · " + student.grade + ".º grado";
+    detail.textContent = student.code + " · " + student.course.label;
 
     identity.append(name, detail);
 
@@ -324,9 +344,9 @@ function renderCallLog() {
   if (!courseSelect) return;
   const selectedCourse = courseSelect.value;
   const allCoursesSelected = selectedCourse === "all";
-  const selectedGrade = Number(selectedCourse);
-  const firstStudent = (selectedGrade - 1) * 20 + 1;
-  const lastStudent = selectedGrade * 20;
+  const selectedGroup = GROUP_BY_COURSE[selectedCourse];
+  const firstStudent = selectedGroup ? (selectedGroup - 1) * 20 + 1 : 0;
+  const lastStudent = selectedGroup ? selectedGroup * 20 : -1;
   const courseCalls = calls
     .filter(call => {
       if (allCoursesSelected) return true;
@@ -374,10 +394,10 @@ function renderCallLog() {
 
     if (allCoursesSelected) {
       const studentNumber = Number(call.code.replace("DDCES", ""));
-      const grade = Math.floor((studentNumber - 1) / 20) + 1;
+      const course = courseForStudentNumber(studentNumber);
       const courseTag = document.createElement("span");
       courseTag.className = "call-grade";
-      courseTag.textContent = grade + ".º grado";
+      courseTag.textContent = course.label;
       identity.appendChild(courseTag);
     }
 
