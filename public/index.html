@@ -1,23 +1,52 @@
 <!doctype html>
 <html lang="es">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#105c66">
 <title>DDCES · School Drive-Thru</title>
-<link rel="stylesheet" href="style.css?v=5">
+<link rel="stylesheet" href="style.css?v=6">
 </head>
 <body>
-<header><div class="brand">DDCES</div><div><h1>School Drive-Thru</h1><p>Sistema de recogida de alumnos</p></div><span id="connection" class="connection">Conectando…</span></header>
+<header class="site-header">
+  <div class="header-inner">
+    <div class="logo-panel">
+      <img id="schoolLogo" class="school-logo" alt="Downtown Doral Charter Elementary">
+    </div>
+    <div class="header-copy">
+      <div class="brand-kicker">DOWNTOWN DORAL CHARTER ELEMENTARY</div>
+      <h1>School Drive-Thru</h1>
+      <p>Sistema de recogida de alumnos</p>
+    </div>
+    <span id="connection" class="connection">Conectando…</span>
+  </div>
+</header>
+
 <main>
 <section id="home" class="panel home">
-<h2>Selecciona una pantalla</h2>
-<div class="choice">
-  <button class="big primary" data-role="drive">🚗 DRIVE-THRU<small>Acceso para introducir códigos</small></button>
-  <button class="big secondary" data-role="classroom">🏫 PROFESOR / AULA<small>Registro de llamadas de tu curso</small></button>
-</div>
-<p class="hint">Cada pantalla requiere su contraseña de acceso.</p>
+  <div class="section-kicker">DDCES · RECOGIDA ESCOLAR</div>
+  <h2>Selecciona una pantalla</h2>
+  <p class="section-intro">Accede al área que necesitas utilizar.</p>
+  <div class="choice">
+    <button class="big primary" data-role="drive">
+      <span class="button-icon">🚗</span>
+      DRIVE-THRU
+      <small>Acceso para introducir códigos</small>
+    </button>
+    <button class="big secondary" data-role="classroom">
+      <span class="button-icon">🏫</span>
+      PROFESOR / AULA
+      <small>Registro de llamadas de tu curso</small>
+    </button>
+  </div>
+  <p class="hint">Cada pantalla requiere su contraseña de acceso.</p>
 </section>
+
 <section id="login" class="panel hidden">
-  <div class="topline"><button id="loginBack" class="back">← Inicio</button><span id="loginBadge" class="pill">ACCESO</span></div>
+  <div class="topline">
+    <button id="loginBack" class="back">← Inicio</button>
+    <span id="loginBadge" class="pill">ACCESO</span>
+  </div>
   <h2 id="loginTitle">Contraseña de acceso</h2>
   <p id="loginDescription" class="login-description">Introduce la contraseña para continuar.</p>
   <form id="loginForm" class="login-form">
@@ -27,36 +56,62 @@
   </form>
   <p id="loginError" class="login-error" role="alert"></p>
 </section>
+
 <section id="drive" class="panel hidden">
-<div class="topline"><button class="app-back back">← Cerrar sesión</button><span class="pill">PANTALLA DRIVE-THRU</span></div>
-<h2>Introduce el código del alumno</h2>
-<div class="entry"><input id="code" autocomplete="off" placeholder="DDCES23" aria-label="Código del alumno"><button id="send" class="primary">LLAMAR</button></div>
-<div class="keypad" id="keypad">
-<button data-key="1">1</button><button data-key="2">2</button><button data-key="3">3</button>
-<button data-key="4">4</button><button data-key="5">5</button><button data-key="6">6</button>
-<button data-key="7">7</button><button data-key="8">8</button><button data-key="9">9</button>
-<button data-key="clear" class="utility">BORRAR</button><button data-key="0">0</button><button data-key="back" class="utility">⌫</button>
-</div><p id="notice" class="notice" aria-live="polite"></p>
+  <div class="topline">
+    <button class="app-back back">← Cerrar sesión</button>
+    <span class="pill">PANTALLA DRIVE-THRU</span>
+  </div>
+  <h2>Introduce el código del alumno</h2>
+  <p class="section-intro">Escribe el código completo o utiliza el teclado numérico.</p>
+  <div class="entry">
+    <input id="code" autocomplete="off" placeholder="DDCES23" aria-label="Código del alumno">
+    <button id="send" class="primary">LLAMAR</button>
+  </div>
+  <div class="keypad" id="keypad">
+    <button data-key="1">1</button><button data-key="2">2</button><button data-key="3">3</button>
+    <button data-key="4">4</button><button data-key="5">5</button><button data-key="6">6</button>
+    <button data-key="7">7</button><button data-key="8">8</button><button data-key="9">9</button>
+    <button data-key="clear" class="utility">BORRAR</button><button data-key="0">0</button><button data-key="back" class="utility">⌫</button>
+  </div>
+  <p id="notice" class="notice" aria-live="polite"></p>
 </section>
+
 <section id="classroom" class="panel hidden">
-<div class="topline"><button class="app-back back">← Cerrar sesión</button><span class="pill">PANTALLA PROFESOR / AULA</span><button id="fullscreen" class="utility">⛶ Pantalla completa</button></div>
-<div class="class-head">
-  <div><h2>Registro de llamadas</h2><p>Las llamadas permanecen visibles durante todo el día, en el orden en que se han realizado.</p></div>
-  <label class="course-picker" for="courseSelect">Curso que deseas visualizar
-    <select id="courseSelect" aria-label="Seleccionar grado">
-      <option value="1">1.º grado</option><option value="2">2.º grado</option>
-      <option value="3">3.º grado</option><option value="4">4.º grado</option>
-      <option value="5">5.º grado</option><option value="6">6.º grado</option>
-      <option value="7">7.º grado</option><option value="8">8.º grado</option>
-      <option value="all">ALL</option>
-    </select>
-  </label>
-</div>
-<div id="courseSummary" class="course-summary">0 llamadas registradas hoy</div>
-<div id="callLog" class="call-log" aria-live="polite"></div>
-<p class="teacher-note">Esta pantalla es solo de consulta: las llamadas no se pueden borrar ni quitar desde el aula.</p>
+  <div class="topline">
+    <button class="app-back back">← Cerrar sesión</button>
+    <span class="pill">PANTALLA PROFESOR / AULA</span>
+    <button id="fullscreen" class="utility">⛶ Pantalla completa</button>
+  </div>
+  <div class="class-head">
+    <div>
+      <div class="section-kicker">DDCES · CONTROL DE RECOGIDA</div>
+      <h2>Registro de llamadas</h2>
+      <p>Las llamadas permanecen visibles durante todo el día, en el orden en que se han realizado.</p>
+    </div>
+    <label class="course-picker" for="courseSelect">Curso que deseas visualizar
+      <select id="courseSelect" aria-label="Seleccionar grado">
+        <option value="1">1.º grado</option><option value="2">2.º grado</option>
+        <option value="3">3.º grado</option><option value="4">4.º grado</option>
+        <option value="5">5.º grado</option><option value="6">6.º grado</option>
+        <option value="7">7.º grado</option><option value="8">8.º grado</option>
+        <option value="all">ALL</option>
+      </select>
+    </label>
+  </div>
+  <div id="courseSummary" class="course-summary">0 llamadas registradas hoy</div>
+  <div id="callLog" class="call-log" aria-live="polite"></div>
+  <p class="teacher-note">Esta pantalla es solo de consulta: las llamadas no se pueden borrar ni quitar desde el aula.</p>
 </section>
 </main>
-<footer>DDCES · Sistema de recogida escolar</footer>
-<script src="/socket.io/socket.io.js"></script><script src="app.js?v=5"></script>
-</body></html>
+
+<footer>
+  <span class="footer-mark">DDCES</span>
+  <span>Downtown Doral Charter Elementary · School Drive-Thru</span>
+</footer>
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="logo-data.js?v=1"></script>
+<script src="app.js?v=6"></script>
+</body>
+</html>
