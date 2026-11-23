@@ -206,18 +206,23 @@ function formatCallTime(timestamp) {
 
 function renderCallLog() {
   if (!courseSelect) return;
-  const selectedGrade = Number(courseSelect.value);
+  const selectedCourse = courseSelect.value;
+  const allCoursesSelected = selectedCourse === "all";
+  const selectedGrade = Number(selectedCourse);
   const firstStudent = (selectedGrade - 1) * 20 + 1;
   const lastStudent = selectedGrade * 20;
   const courseCalls = calls
     .filter(call => {
+      if (allCoursesSelected) return true;
       const studentNumber = Number(call.code.replace("DDCES", ""));
       return studentNumber >= firstStudent && studentNumber <= lastStudent;
     })
     .sort((a, b) => a.calledAt - b.calledAt);
 
+  const summary = courseCalls.length +
+    (courseCalls.length === 1 ? " llamada registrada hoy" : " llamadas registradas hoy");
   document.getElementById("courseSummary").textContent =
-    courseCalls.length + (courseCalls.length === 1 ? " llamada registrada hoy" : " llamadas registradas hoy");
+    allCoursesSelected ? summary + " · TODOS LOS GRADOS" : summary;
 
   const log = document.getElementById("callLog");
   log.replaceChildren();
@@ -249,6 +254,15 @@ function renderCallLog() {
     studentName.textContent = studentNameForCode(call.code);
 
     identity.append(studentCode, studentName);
+
+    if (allCoursesSelected) {
+      const studentNumber = Number(call.code.replace("DDCES", ""));
+      const grade = Math.floor((studentNumber - 1) / 20) + 1;
+      const courseTag = document.createElement("span");
+      courseTag.className = "call-grade";
+      courseTag.textContent = grade + ".º grado";
+      identity.appendChild(courseTag);
+    }
 
     const status = document.createElement("span");
     status.className = "call-status";
