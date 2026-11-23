@@ -1,4 +1,6 @@
 const socket = io();
+const schoolLogo = document.getElementById("schoolLogo");
+if (schoolLogo && window.DDCES_LOGO_DATA) schoolLogo.src = window.DDCES_LOGO_DATA;
 const home = document.getElementById("home");
 const login = document.getElementById("login");
 const drive = document.getElementById("drive");
