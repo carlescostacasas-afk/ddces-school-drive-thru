@@ -13,7 +13,7 @@
 
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon-ddces.png?v=1">
 <title>DDCES · School Drive-Thru</title>
-<link rel="stylesheet" href="style.css?v=7">
+<link rel="stylesheet" href="style.css?v=8">
 </head>
 <body>
 <header class="site-header">
@@ -107,6 +107,27 @@
       </select>
     </label>
   </div>
+  <section class="student-search-panel" aria-labelledby="studentSearchTitle">
+    <div class="student-search-heading">
+      <div>
+        <div class="section-kicker">CONSULTA RÁPIDA</div>
+        <h3 id="studentSearchTitle">Buscar alumno</h3>
+        <p>Busca por nombre, apellido o código para comprobar si ya ha sido llamado y consultar la hora.</p>
+      </div>
+    </div>
+    <div class="student-search-controls">
+      <label class="student-search-field" for="studentSearchInput">
+        <span class="visually-hidden">Nombre, apellido o código del alumno</span>
+        <span class="search-icon" aria-hidden="true">⌕</span>
+        <input id="studentSearchInput" type="search" autocomplete="off"
+          placeholder="Ej. Sofia Alvarez o DDCES1"
+          aria-describedby="studentSearchHelp">
+      </label>
+      <button id="clearStudentSearch" class="utility clear-search" type="button">Limpiar</button>
+    </div>
+    <p id="studentSearchHelp" class="student-search-help">La búsqueda respeta el curso seleccionado. Elige ALL para consultar todo el colegio.</p>
+    <div id="studentSearchResults" class="student-search-results hidden" role="status" aria-live="polite"></div>
+  </section>
   <div id="courseSummary" class="course-summary">0 llamadas registradas hoy</div>
   <div id="callLog" class="call-log" aria-live="polite"></div>
   <p class="teacher-note">Esta pantalla es solo de consulta: las llamadas no se pueden borrar ni quitar desde el aula.</p>
@@ -120,6 +141,6 @@
 
 <script src="/socket.io/socket.io.js"></script>
 <script src="logo-data.js?v=1"></script>
-<script src="app.js?v=7"></script>
+<script src="app.js?v=8"></script>
 </body>
 </html>
