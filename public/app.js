@@ -282,3 +282,13 @@ function renderCallLog() {
 }
 
 renderCallLog();
+
+
+// Register the installable app shell over HTTPS (Render production URL).
+if ("serviceWorker" in navigator && window.location.protocol === "https:") {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("/service-worker.js").catch(error => {
+      console.warn("DDCES app shell registration failed:", error);
+    });
+  });
+}
