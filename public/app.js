@@ -226,7 +226,7 @@ function formatCallTime(timestamp) {
 function normalizeSearchText(value) {
   return String(value || "")
     .normalize("NFD")
-    .replace(/[\\u0300-\\u036f]/g, "")
+    .replace(/[\u0300-\u036f]/g, "")
     .toLocaleLowerCase("es")
     .trim();
 }
@@ -241,7 +241,7 @@ function renderStudentSearchResults() {
 
   const allCoursesSelected = courseSelect.value === "all";
   const selectedGrade = Number(courseSelect.value);
-  const searchTerms = query.split(/\\s+/).filter(Boolean);
+  const searchTerms = query.split(/\s+/).filter(Boolean);
 
   const students = STUDENT_NAMES.map((name, index) => {
     const number = index + 1;
